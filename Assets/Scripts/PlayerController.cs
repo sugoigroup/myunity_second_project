@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SubsystemsImplementation;
 
@@ -10,6 +11,7 @@ namespace DefaultNamespace
         private Movement2D movement2D;
         private Direction _direction = Direction.Right;
         private AroundWrap _aroundWrap;
+        private SpriteRenderer _spriteRenderer;
         
         private LayerMask tileLayer;
         private float rayDistance = 0.55f;
@@ -20,6 +22,7 @@ namespace DefaultNamespace
             
             movement2D = GetComponent<Movement2D>();
             _aroundWrap = GetComponent<AroundWrap>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         private void Update()
@@ -63,6 +66,19 @@ namespace DefaultNamespace
             {
                 Destroy(collision.gameObject);
             }
+            if (collision.CompareTag("Enemy"))
+            {
+                StopCoroutine("OnHit");
+                StartCoroutine("OnHit");
+                Destroy(collision.gameObject);
+            }
+        }
+
+        private IEnumerator OnHit()
+        {
+            _spriteRenderer.color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            _spriteRenderer.color = Color.white;
         }
     }
 }
